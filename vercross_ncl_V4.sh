@@ -394,7 +394,7 @@ printVarSummary (wrf_var)
 
   res@tmXBLabelFontHeightF    = 0.013
 
-  plot = gsn_csm_contour(wks,var_mat(0:12,:),res)
+  plot = gsn_csm_contour(wks,var_mat(1:12,:),res)
 
 end
 ;;================================================
