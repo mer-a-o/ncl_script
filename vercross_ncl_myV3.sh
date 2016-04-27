@@ -20,7 +20,7 @@ station_num=$6
 
 plotname=${var_name}-vercross
 
-cat > ${plotname}\_${start_date}.tmp <<EOF
+#cat > ${plotname}\_${start_date}.tmp <<EOF
 
 ;;==================================================
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_code.ncl"
@@ -42,6 +42,8 @@ begin
 
  start_month     = toint(str_get_field(start_date, 2, "-_.:"))
  start_day        = toint(str_get_field(start_date, 3, "-_.:")) 
+;;===========ADDING 
+ 
 ;;============================
 ;;Station information-New station can be added to end of the arrays
 ;;===========================
