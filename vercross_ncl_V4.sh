@@ -313,9 +313,22 @@ print (wrf_date_name)
      wrf_var@units = "#/kg"
      wrf_var@description = "Aerosol Number < 2.5um Concentration"
   end if
-
-
-
+  if (var_name.eq."tracer_anthro")
+     Levels := (/ 0.1, 0.2, 0.5, 1., 2., 5.,10., 20., 50., 100., 200., 500. /)
+     co1 = wrf_user_getvar(wrf_file,"voca",0)
+     co2 = wrf_user_getvar(wrf_file,"smpa",0)
+     wrf_var = (co1+co2)*1000.*250./(0.04*28.) ;units are in voc precursor, change to CO
+     wrf_var@units = "ppb"
+     wrf_var@description = "CO anthropogenic"
+  end if
+  if (var_name.eq."tracer_bb")
+     Levels := (/ 0.1, 0.2, 0.5, 1., 2., 5.,10., 20., 50., 100., 200., 500. /)
+     co1 = wrf_user_getvar(wrf_file,"vocbb",0)
+     co2 = wrf_user_getvar(wrf_file,"smpbb",0)
+     wrf_var = (co1+co2)*1000.*250./(0.04*28.) ;units are in voc precursor, change to CO
+     wrf_var@units = "ppb"
+     wrf_var@description = "CO biomass burning"
+  end if
 ;;=============================
    wrf_var@long_name = var_name
 printVarSummary (wrf_var)
@@ -394,7 +407,7 @@ printVarSummary (wrf_var)
 
   res@tmXBLabelFontHeightF    = 0.013
 
-  plot = gsn_csm_contour(wks,var_mat(1:12,:),res)
+  plot = gsn_csm_contour(wks,var_mat(2:12,:),res)
 
 end
 ;;================================================
@@ -416,7 +429,7 @@ pdfcrop ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf plt_${plotname}_st
 mv plt_${plotname}_stn_${station_num}_crop.pdf  ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf 
 gs -SDEVICE=png16m -r125 -dAutoRotatePages=/none -sOutputFile=${plot_folder}/plt_${plotname}_stn_${station_num}.png -dNOPAUSE -dBATCH ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf 
 #  i=$[$i+1]
-convert ${plot_folder}/plt_${plotname}_stn_${station_num}.png -rotate -90 ${plot_folder}/plt_${plotname}_stn_${station_num}.png
+#convert ${plot_folder}/plt_${plotname}_stn_${station_num}.png -rotate -90 ${plot_folder}/plt_${plotname}_stn_${station_num}.png
 
 rm ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf
 #rm ${plotname}\_${start_date}.ncl
