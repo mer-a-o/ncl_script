@@ -6,9 +6,9 @@
 
 
 
-mkdir /localscratch/Users/psaide
-cd /localscratch/Users/psaide/
-export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
+#mkdir /localscratch/Users/psaide
+#cd /localscratch/Users/psaide/
+#export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
 
 start_date=$1
 var_name=$2
@@ -81,69 +81,49 @@ begin
 
   do hr_wrf=0,num_hrs-1 ;;plot num_hrs  hourly  forcasts in one plot 
 
+    if (hr_wrf.ge.24)
+      hr_wrf_d := hr_wrf-(hr_wrf/24)*24
+    else 
+      hr_wrf_d := hr_wrf
+    end if
+    start_day_d := start_day+(hr_wrf/24)
+
+    if (start_day_d.gt.30)
+      start_month_d:=start_month+(start_day_d/30)
+      start_day_d:=start_day_d-(start_day_d/30)*30
+    else
+      start_month_d := start_month
+    end if
+
 ;;=========Building wrf_date_name============
-    if (start_day.ge.1 .and. start_day.lt.9) then
+    if (start_day_d.ge.1 .and. start_day_d.lt.9) then
 
-      if (hr_wrf.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day+"_0"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.10 .and. hr_wrf.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day+"_"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.24.and.hr_wrf.le.33) then
-         wrf_date_name := "2016-0"+start_month+"-0"+(start_day+1)+"_0"+(hr_wrf-24)+":00:00.nc"
-      else if (hr_wrf.gt.33) then
-         wrf_date_name := "2016-0"+start_month+"-0"+(start_day+1)+"_"+(hr_wrf-24)+":00:00.nc"
-      end if ;;hr_wrf
-      end if
+      if (hr_wrf_d.le.9) then
+         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
       end if 
       end if
-    else if (start_day.eq.9) then
+    else if (start_day_d.eq.9) then
 
-      if (hr_wrf.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day+"_0"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.10 .and. hr_wrf.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day+"_"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.24.and.hr_wrf.le.33) then
-         wrf_date_name := "2016-0"+start_month+"-"+(start_day+1)+"_0"+(hr_wrf-24)+":00:00.nc"
-      else if (hr_wrf.gt.33) then
-         wrf_date_name := "2016-0"+start_month+"-"+(start_day+1)+"_"+(hr_wrf-24)+":00:00.nc"
-      end if ;;hr_wrf
-      end if
+      if (hr_wrf_d.le.9) then
+         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
       end if
       end if
 
-    else if (start_day.ge.10 .and. start_day.le.29) then
+    else if (start_day_d.ge.10) then
 
-      if (hr_wrf.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day+"_0"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.10 .and. hr_wrf.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day+"_"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.24.and.hr_wrf.le.33) then
-         wrf_date_name := "2016-0"+start_month+"-"+(start_day+1)+"_0"+(hr_wrf-24)+":00:00.nc"
-      else if (hr_wrf.gt.33) then
-         wrf_date_name := "2016-0"+start_month+"-"+(start_day+1)+"_"+(hr_wrf-24)+":00:00.nc"
+      if (hr_wrf_d.le.9) then
+         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
 
-      end if ;;hr_wrf
       end if
       end if
-      end if
-
-    else if (start_day.eq.30) then
-
-      if (hr_wrf.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day+"_0"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.10 .and. hr_wrf.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day+"_"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.24.and.hr_wrf.le.33) then
-         wrf_date_name := "2016-0"+(start_month+1)+"-"+(start_day-29)+"_0"+(hr_wrf-24)+":00:00.nc"
-      else if (hr_wrf.gt.33) then 
-         wrf_date_name := "2016-0"+(start_month+1)+"-"+(start_day-29)+"_"+(hr_wrf-24)+":00:00.nc"
-      end if ;;hr_wrf
-      end if
-      end if
-      end if 
 
     end if  ;;start_day
-    end if
     end if 
     end if 
 ;=====================================       
@@ -409,7 +389,7 @@ printVarSummary (wrf_var)
 
   plot = gsn_csm_contour(wks,var_mat(2:12,:),res)
 
-#done
+
 end
 ;;================================================
 EOF
@@ -417,8 +397,8 @@ EOF
 
 mv ${plotname}\_${start_date}_${station_num}.tmp ${plotname}\_${start_date}\_${station_num}.ncl
 
-PATH=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0/bin:$PATH
-export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
+#PATH=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0/bin:$PATH
+#export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
 ncl ${plotname}\_${start_date}\_${station_num}.ncl
 
 
