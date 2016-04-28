@@ -6,9 +6,9 @@
 
 
 
-#mkdir /localscratch/Users/psaide
-#cd /localscratch/Users/psaide/
-#export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
+mkdir /localscratch/Users/psaide
+cd /localscratch/Users/psaide/
+export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
 
 start_date=$1
 var_name=$2
@@ -46,31 +46,25 @@ begin
  ;;============================
 ;;Station information-New station can be added to end of the arrays
 ;;===========================
+   station_lat_arr = (/37.3123,37.5220,33.2920,37.4580,37.5640,37.3389,37.9660\
+   ,36.5389,35.2280,35.2350,37.7710,35.9619,35.8500,34.9128,35.5819, 37.0800\
+   ,37.5689,37.68712,33.941945,32.122778,33.94194444,35.941072,36.35,43.4567\
+   ,33.240962,32.751626,26.866919,37.451041,33.524161,33.5482424,43.7004,39.97689/)
 
-  station_lat_arr = (/37.3123,37.5220,33.2920,37.4580,37.5640,37.3389,37.9660\
-  ,36.5389,35.2280,35.2350,37.7710,35.9619,35.8500,34.9128,35.5819, 37.0800\
-  ,37.5689,37.68712,33.941945,32.122778,33.94194444,35.941072,36.35/)
-
-  station_lon_arr = (/127.3105,127.1200,126.1620,126.9510,126.9350,127.2658\
+   station_lon_arr = (/127.3105,127.1200,126.1620,126.9510,126.9350,127.2658\
    ,124.6300,126.3295,126.8430,129.0830,128.8670,127.0050,128.5800,126.4369\
    ,129.1897,127.0400,126.6397,128.75872,124.592778,125.181945,124.5927778\
-   ,126.683008,127.38/)
+   ,126.683008,127.38,143.7661,130.288239,128.681728,128.248465,137.358972\
+   ,130.475492,130.3650523,132.1635,116.38137/)
 
-   ;; station names with " " 
 
    station_name = (/"Taehwa Research Forest","Olympic Park", "Gosan (Jeju Island)"\
    ,"Seoul_SNU","Yonsei_University","Hankuk_UFS","Baengnyeong Island","Anmyeon"\
    ,"GIST (Gwangju)","Pusan Univ. (Busan)","Gangneung-Wonju Univ.","Iksan","Kyungpook NU"\
    ,"Mokpo University","Ulsan UNIST","Osan","NIER","Daegwallyeong","Gageocho","Ieodo"\
-   ,"Jeonju","Kunsan University", "Daejeon"/)
+   ,"Jeonju","Kunsan University", "Daejeon", "Rikubetsu (Japan)","Saga (Japan)","Fukue (Japan)"\
+   ,"Cape Hedo (Japan)","Noto (Japan)","Kasuga (Japan)", "Fukuoka (Japan)","Ussuriysk","Beijing"/)
 
-   ;; station names with "_" 
-   
-;   station_name_plt = (/"Taehwa-Research-Forest","Olympic-Park", "Gosan-Jeju-Island"\
-;   ,"Seoul-SNU","Yonsei-University","Hankuk-UFS","Baengnyeong-Island","Anmyeon"\
-;   ,"GIST-Gwangju","Pusan-Univ-Busan","Gangneung-Wonju-Univ.","Iksan","Kyungpook-NU"\
-;   ,"Mokpo-University","Ulsan-UNIST","Osan","NIER","Daegwallyeong","Gageocho","Ieodo"\
-;   ,"Jeonju","Kunsan-University", "Daejeon"/)
 
 ;;=========================================
 ;;Open WRF- Read vars-
@@ -83,53 +77,51 @@ begin
   day_from_start := 0
 
   do hr_wrf=start_hour,(num_hrs_2+start_hour-1),3 ;;plot num_hrs  hourly  forcasts in one plot 
-    
-   if (hr_wrf.ge.24)
+    if (hr_wrf.ge.24)
       hr_wrf_d := hr_wrf-(hr_wrf/24)*24
     else 
       hr_wrf_d := hr_wrf
     end if
-   start_day_d := start_day+(hr_wrf/24)
+    start_day_d := start_day+(hr_wrf/24)
+
+    if (start_day_d.gt.30)
+      start_month_d:=start_month+(start_day_d/30)
+      start_day_d:=start_day_d-(start_day_d/30)*30
+    else
+      start_month_d := start_month
+    end if
+
+   
 print (hr_wrf_d)
 ;;=========Building wrf_date_name============
     if (start_day_d.ge.1 .and. start_day_d.lt.9) then
 
       if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
       else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
+         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
       end if 
       end if
     else if (start_day_d.eq.9) then
 
       if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
       else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
+         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
       end if
       end if
 
-    else if (start_day_d.ge.10 .and. start_day_d.le.29) then
+    else if (start_day_d.ge.10) then
 
       if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
       else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
+         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
 
       end if
       end if
-;;FIX HERE
-    else if (start_day_d.eq.30) then
-
-      if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
-      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
-      end if
-      end if 
 
     end if  ;;start_day
-    end if
     end if 
     end if 
 ;=====================================       
@@ -415,8 +407,8 @@ EOF
 
 mv ${plotname}\_${start_date}_${station_num}.tmp ${plotname}\_${start_date}\_${station_num}.ncl
 
-#PATH=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0/bin:$PATH
-#export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
+PATH=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0/bin:$PATH
+export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
 ncl ${plotname}\_${start_date}\_${station_num}.ncl
 
 
@@ -426,8 +418,7 @@ echo $command
 eval $command
 mv plt_${plotname}_stn_${station_num}_crop.pdf  ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf
 gs -SDEVICE=png16m -r125 -dAutoRotatePages=/none -sOutputFile=${plot_folder}/plt_${plotname}_stn_${station_num}.png -dNOPAUSE -dBATCH ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf
-#  i=$[$i+1]
-#/usr/bin/convert ${plot_folder}/plt_${plotname}_stn_${station_num}.png -rotate -90 ${plot_folder}/plt_${plotname}_stn_${station_num}.png
+/usr/bin/convert ${plot_folder}/plt_${plotname}_stn_${station_num}.png -rotate -90 ${plot_folder}/plt_${plotname}_stn_${station_num}.png
 
 rm ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf
 rm ${plotname}\_${start_date}\_${station_num}.ncl
