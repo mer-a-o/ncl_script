@@ -42,7 +42,8 @@ begin
 
  start_month     = toint(str_get_field(start_date, 2, "-_.:"))
  start_day        = toint(str_get_field(start_date, 3, "-_.:")) 
-;;============================
+ start_hour      = toint(str_get_field(start_date, 4, "-_.:")) 
+ ;;============================
 ;;Station information-New station can be added to end of the arrays
 ;;===========================
 
@@ -75,14 +76,15 @@ begin
 ;;Open WRF- Read vars-
 ;;======================================
 
-  num_hrs = 30  ;; How many wrfout you want to plot
-  num_hrs_2 = 90  ;; How many wrfout you want to plot
+;  num_hrs = 30  ;; How many wrfout you want to plot
+  num_hrs_2 = 43  ;; How many wrfout you want to plot
 
   var_mat = new ((/100,num_hrs_2/),float)  ;;100 horizontal layer, 39 hours
   day_from_start := 0
 
-  do hr_wrf=0,num_hrs_2-1,3 ;;plot num_hrs  hourly  forcasts in one plot 
-    if (hr_wrf.ge.24)
+  do hr_wrf=start_hour,(num_hrs_2+start_hour-1),3 ;;plot num_hrs  hourly  forcasts in one plot 
+    
+   if (hr_wrf.ge.24)
       hr_wrf_d := hr_wrf-(hr_wrf/24)*24
     else 
       hr_wrf_d := hr_wrf
@@ -335,7 +337,7 @@ printVarSummary (wrf_var)
     var_plane = wrf_user_intrp3d(wrf_var,z,"v",plane,angle,opts_cr)
 ;printVarSummary(var_plane)
 
-    var_mat(:,hr_wrf) = var_plane(:,wrf_ind_station(1))
+    var_mat(:,(hr_wrf-start_hour)) = var_plane(:,wrf_ind_station(1))
     delete(var_plane)
 
   end do ;;hr_wrf
@@ -351,11 +353,10 @@ printVarSummary (wrf_var)
       var_mat(:,i_R) = (var_mat(:,i_R-2)+2*var_mat(:,i_R+1))/3
   end do ;;i_l
 
-print(var_mat(:,36:38))
 
   ;;===========WKS and general plotting Resources==============
-;  plot_type = "pdf"
-  plot_type = "x11"
+  plot_type = "pdf"
+;  plot_type = "x11"
   plot_name = "$plot_folder/plt_${plotname}_stn_"+(ij_station)
 
 ;  type@wkPaperWidthF  =  6.375  ; in inches 
@@ -399,12 +400,12 @@ print(var_mat(:,36:38))
   var_mat&time = ttime  
   restick = True
   restick@ttmFormat = "%N-%D_%HZ"
-  restick@ttmNumTicks = 6  ;;How many tickmark on X axis?
+  restick@ttmNumTicks = 5  ;;How many tickmark on X axis?
   time_axis_labels(var_mat&time,res,restick) ; call the formatting procedure
 
   res@tmXBLabelFontHeightF    = 0.013
 
-  plot = gsn_csm_contour(wks,var_mat(2:12,0:87),res)
+  plot = gsn_csm_contour(wks,var_mat(2:12,0:num_hrs_2-4),res)
 
 
 end
@@ -426,10 +427,10 @@ eval $command
 mv plt_${plotname}_stn_${station_num}_crop.pdf  ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf
 gs -SDEVICE=png16m -r125 -dAutoRotatePages=/none -sOutputFile=${plot_folder}/plt_${plotname}_stn_${station_num}.png -dNOPAUSE -dBATCH ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf
 #  i=$[$i+1]
-/usr/bin/convert ${plot_folder}/plt_${plotname}_stn_${station_num}.png -rotate -90 ${plot_folder}/plt_${plotname}_stn_${station_num}.png
+#/usr/bin/convert ${plot_folder}/plt_${plotname}_stn_${station_num}.png -rotate -90 ${plot_folder}/plt_${plotname}_stn_${station_num}.png
 
 rm ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf
-#rm ${plotname}\_${start_date}\_${station_num}.ncl
+rm ${plotname}\_${start_date}\_${station_num}.ncl
 
 #for g in ${plot_folder}/*crop.pdf*
 #do
