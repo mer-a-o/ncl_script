@@ -6,9 +6,9 @@
 
 
 
-mkdir /localscratch/Users/psaide
-cd /localscratch/Users/psaide/
-export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
+#mkdir /localscratch/Users/psaide
+#cd /localscratch/Users/psaide/
+#export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
 
 start_date=$1
 var_name=$2
@@ -75,70 +75,54 @@ begin
 ;;Open WRF- Read vars-
 ;;======================================
 
-  num_hrs = 39  ;; How many wrfout you want to plot
-  
-  var_mat = new ((/100,num_hrs/),float)  ;;100 horizontal layer, 39 hours
+  num_hrs = 30  ;; How many wrfout you want to plot
+  num_hrs_2 = 90  ;; How many wrfout you want to plot
 
-  do hr_wrf=0,num_hrs-1 ;;plot num_hrs  hourly  forcasts in one plot 
+  var_mat = new ((/100,num_hrs_2/),float)  ;;100 horizontal layer, 39 hours
+  day_from_start := 0
 
+  do hr_wrf=0,num_hrs_2-1,3 ;;plot num_hrs  hourly  forcasts in one plot 
+    if (hr_wrf.ge.24)
+      hr_wrf_d := hr_wrf-(hr_wrf/24)*24
+    else 
+      hr_wrf_d := hr_wrf
+    end if
+   start_day_d := start_day+(hr_wrf/24)
+print (hr_wrf_d)
 ;;=========Building wrf_date_name============
-    if (start_day.ge.1 .and. start_day.lt.9) then
+    if (start_day_d.ge.1 .and. start_day_d.lt.9) then
 
-      if (hr_wrf.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day+"_0"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.10 .and. hr_wrf.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day+"_"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.24.and.hr_wrf.le.33) then
-         wrf_date_name := "2016-0"+start_month+"-0"+(start_day+1)+"_0"+(hr_wrf-24)+":00:00.nc"
-      else if (hr_wrf.gt.33) then
-         wrf_date_name := "2016-0"+start_month+"-0"+(start_day+1)+"_"+(hr_wrf-24)+":00:00.nc"
-      end if ;;hr_wrf
-      end if
+      if (hr_wrf_d.le.9) then
+         wrf_date_name := "2016-0"+start_month+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+         wrf_date_name := "2016-0"+start_month+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
       end if 
       end if
-    else if (start_day.eq.9) then
+    else if (start_day_d.eq.9) then
 
-      if (hr_wrf.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day+"_0"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.10 .and. hr_wrf.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-0"+start_day+"_"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.24.and.hr_wrf.le.33) then
-         wrf_date_name := "2016-0"+start_month+"-"+(start_day+1)+"_0"+(hr_wrf-24)+":00:00.nc"
-      else if (hr_wrf.gt.33) then
-         wrf_date_name := "2016-0"+start_month+"-"+(start_day+1)+"_"+(hr_wrf-24)+":00:00.nc"
-      end if ;;hr_wrf
-      end if
+      if (hr_wrf_d.le.9) then
+         wrf_date_name := "2016-0"+start_month+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+         wrf_date_name := "2016-0"+start_month+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
       end if
       end if
 
-    else if (start_day.ge.10 .and. start_day.le.29) then
+    else if (start_day_d.ge.10 .and. start_day_d.le.29) then
 
-      if (hr_wrf.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day+"_0"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.10 .and. hr_wrf.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day+"_"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.24.and.hr_wrf.le.33) then
-         wrf_date_name := "2016-0"+start_month+"-"+(start_day+1)+"_0"+(hr_wrf-24)+":00:00.nc"
-      else if (hr_wrf.gt.33) then
-         wrf_date_name := "2016-0"+start_month+"-"+(start_day+1)+"_"+(hr_wrf-24)+":00:00.nc"
+      if (hr_wrf_d.le.9) then
+         wrf_date_name := "2016-0"+start_month+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+         wrf_date_name := "2016-0"+start_month+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
 
-      end if ;;hr_wrf
-      end if
       end if
       end if
 
-    else if (start_day.eq.30) then
+    else if (start_day_d.eq.30) then
 
-      if (hr_wrf.le.9) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day+"_0"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.10 .and. hr_wrf.le.23) then
-         wrf_date_name := "2016-0"+start_month+"-"+start_day+"_"+hr_wrf+":00:00.nc"
-      else if (hr_wrf.ge.24.and.hr_wrf.le.33) then
-         wrf_date_name := "2016-0"+(start_month+1)+"-"+(start_day-29)+"_0"+(hr_wrf-24)+":00:00.nc"
-      else if (hr_wrf.gt.33) then 
-         wrf_date_name := "2016-0"+(start_month+1)+"-"+(start_day-29)+"_"+(hr_wrf-24)+":00:00.nc"
-      end if ;;hr_wrf
-      end if
+      if (hr_wrf_d.le.9) then
+         wrf_date_name := "2016-0"+start_month+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+         wrf_date_name := "2016-0"+start_month+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
       end if
       end if 
 
@@ -350,15 +334,28 @@ printVarSummary (wrf_var)
     angle = 0  ;; if 90 then read var_plane(:,wrf_ind_station(1))
     var_plane = wrf_user_intrp3d(wrf_var,z,"v",plane,angle,opts_cr)
 ;printVarSummary(var_plane)
+
     var_mat(:,hr_wrf) = var_plane(:,wrf_ind_station(1))
     delete(var_plane)
 
-
-
   end do ;;hr_wrf
-;;===========WKS and general plotting Resources==============
-  plot_type = "pdf"
-;  plot_type = "x11"
+;print (var_mat)
+;;======================
+;;Interpolation 
+;;======================
+
+  do i_L=1,num_hrs_2-5,3
+      var_mat(:,i_L) = (2*var_mat(:,i_L-1)+var_mat(:,i_L+2))/3
+  end do ;;i_L
+  do i_R=2,num_hrs_2-4,3
+      var_mat(:,i_R) = (var_mat(:,i_R-2)+2*var_mat(:,i_R+1))/3
+  end do ;;i_l
+
+print(var_mat(:,36:38))
+
+  ;;===========WKS and general plotting Resources==============
+;  plot_type = "pdf"
+  plot_type = "x11"
   plot_name = "$plot_folder/plt_${plotname}_stn_"+(ij_station)
 
 ;  type@wkPaperWidthF  =  6.375  ; in inches 
@@ -394,7 +391,7 @@ printVarSummary (wrf_var)
   res@gsnMaximize         = True          ; maximize plot size
 
 
-  ttime = fspan (0,num_hrs-1,num_hrs)
+  ttime = fspan (0,num_hrs_2-1,num_hrs_2)
   ttime@units = "hours since 2016-"+toint(str_get_field(start_date, 2, "-_.:"))+"-"+toint(str_get_field(start_date, 3, "-_.:"))+" 00:00:0.0"
 
   var_mat!0 = "Height"
@@ -407,9 +404,9 @@ printVarSummary (wrf_var)
 
   res@tmXBLabelFontHeightF    = 0.013
 
-  plot = gsn_csm_contour(wks,var_mat(2:12,:),res)
+  plot = gsn_csm_contour(wks,var_mat(2:12,0:87),res)
 
-#done
+
 end
 ;;================================================
 EOF
@@ -417,8 +414,8 @@ EOF
 
 mv ${plotname}\_${start_date}_${station_num}.tmp ${plotname}\_${start_date}\_${station_num}.ncl
 
-PATH=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0/bin:$PATH
-export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
+#PATH=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0/bin:$PATH
+#export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
 ncl ${plotname}\_${start_date}\_${station_num}.ncl
 
 
@@ -432,7 +429,7 @@ gs -SDEVICE=png16m -r125 -dAutoRotatePages=/none -sOutputFile=${plot_folder}/plt
 /usr/bin/convert ${plot_folder}/plt_${plotname}_stn_${station_num}.png -rotate -90 ${plot_folder}/plt_${plotname}_stn_${station_num}.png
 
 rm ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf
-rm ${plotname}\_${start_date}\_${station_num}.ncl
+#rm ${plotname}\_${start_date}\_${station_num}.ncl
 
 #for g in ${plot_folder}/*crop.pdf*
 #do
