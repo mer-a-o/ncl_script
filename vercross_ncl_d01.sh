@@ -118,7 +118,7 @@ print (hr_wrf_d)
 
       end if
       end if
-
+;;FIX HERE
     else if (start_day_d.eq.30) then
 
       if (hr_wrf_d.le.9) then
