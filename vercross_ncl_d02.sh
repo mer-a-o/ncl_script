@@ -75,61 +75,61 @@ begin
 ;;Open WRF- Read vars-
 ;;======================================
 
-  num_hrs = 39  ;; How many wrfout you want to plot
-  
+  num_hrs = 39  ;; How many wrfout you want to plot  
   var_mat = new ((/100,num_hrs/),float)  ;;100 horizontal layer, 39 hours
+  FILES = systemfunc( " ls "+wrf_folder+"wrfout_d0"+wrf_domain+"_*")
+  num_files = dimsizes (FILES)
+  do hr_wrf=0,num_files-1 ;;plot num_hrs  hourly  forcasts in one plot
+     wrf_file := addfile(FILES(hr_wrf),"r")
+print(FILES(hr_wrf))
 
-  do hr_wrf=0,num_hrs-1 ;;plot num_hrs  hourly  forcasts in one plot 
 
-    if (hr_wrf.ge.24)
-      hr_wrf_d := hr_wrf-(hr_wrf/24)*24
-    else 
-      hr_wrf_d := hr_wrf
-    end if
-    start_day_d := start_day+(hr_wrf/24)
-
-    if (start_day_d.gt.30)
-      start_month_d:=start_month+(start_day_d/30)
-      start_day_d:=start_day_d-(start_day_d/30)*30
-    else
-      start_month_d := start_month
-    end if
+;    if (hr_wrf.ge.24)
+;      hr_wrf_d := hr_wrf-(hr_wrf/24)*24
+;    else 
+;      hr_wrf_d := hr_wrf
+;    end if
+;    start_day_d := start_day+(hr_wrf/24)
+;
+;    if (start_day_d.gt.30)
+;      start_month_d:=start_month+(start_day_d/30)
+;      start_day_d:=start_day_d-(start_day_d/30)*30
+;    else
+;      start_month_d := start_month
+;    end if
 
 ;;=========Building wrf_date_name============
-    if (start_day_d.ge.1 .and. start_day_d.lt.9) then
-
-      if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
-      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
-      end if 
-      end if
-    else if (start_day_d.eq.9) then
-
-      if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
-      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
-      end if
-      end if
-
-    else if (start_day_d.ge.10) then
-
-      if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
-      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
-
-      end if
-      end if
-
-    end if  ;;start_day
-    end if 
-    end if 
+;    if (start_day_d.ge.1 .and. start_day_d.lt.9) then
+;
+;      if (hr_wrf_d.le.9) then
+;         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+;      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+;         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
+;      end if 
+;      end if
+;    else if (start_day_d.eq.9) then
+;
+;      if (hr_wrf_d.le.9) then
+;         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+;      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+;         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
+;      end if
+;      end if
+;
+;    else if (start_day_d.ge.10) then
+;
+;      if (hr_wrf_d.le.9) then
+;         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+;      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+;         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
+;
+;      end if
+;      end if
+;
+;    end if  ;;start_day
+;    end if 
+;    end if 
 ;=====================================       
-print (wrf_date_name)
- 
-  wrf_file := addfile(wrf_folder+"/wrfout_d0"+wrf_domain+"_"+wrf_date_name,"r")
 
 ;;================================================
 ;; Setting Levels and unit conversion for var_name

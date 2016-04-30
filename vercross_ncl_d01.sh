@@ -2,13 +2,13 @@
 
 # Example:
 
-#./vercross_ncl.sh 2016-04-10_00:00:00 co 2 /Shared/CGRER-Scratch/pablo_share/KORUS-AQ/forecast/output/20160409/ . 1
+#sh vercross_ncl_d01.sh 2016-04-21_18:00:00 co 1 /Shared/CGRER-Scratch/pablo_share/KORUS-AQ/forecast/output_short/20160421/ . 1
 
 
 
-mkdir /localscratch/Users/psaide
-cd /localscratch/Users/psaide/
-export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
+#mkdir /localscratch/Users/psaide
+#cd /localscratch/Users/psaide/
+#export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
 
 start_date=$1
 var_name=$2
@@ -74,60 +74,66 @@ begin
   num_hrs_2 = 43  ;; How many wrfout you want to plot
 
   var_mat = new ((/100,num_hrs_2/),float)  ;;100 horizontal layer, 39 hours
-  day_from_start := 0
+;  day_from_start := 0
+  FILES = systemfunc( " ls "+wrf_folder+"wrfout_d0"+wrf_domain+"_*")
+  num_files = dimsizes (FILES)
 
-  do hr_wrf=start_hour,(num_hrs_2+start_hour-1),3 ;;plot num_hrs  hourly  forcasts in one plot 
-    if (hr_wrf.ge.24)
-      hr_wrf_d := hr_wrf-(hr_wrf/24)*24
-    else 
-      hr_wrf_d := hr_wrf
-    end if
-    start_day_d := start_day+(hr_wrf/24)
+  do hr_wrf=0,num_files-1 ;;plot num_hrs  hourly  forcasts in one plot
+     wrf_file := addfile(FILES(hr_wrf),"r")
+print(FILES(hr_wrf))
 
-    if (start_day_d.gt.30)
-      start_month_d:=start_month+(start_day_d/30)
-      start_day_d:=start_day_d-(start_day_d/30)*30
-    else
-      start_month_d := start_month
-    end if
-
-   
-print (hr_wrf_d)
+;  do hr_wrf=start_hour,(num_hrs_2+start_hour-1),3 ;;plot num_hrs  hourly  forcasts in one plot 
+;    if (hr_wrf.ge.24)
+;      hr_wrf_d := hr_wrf-(hr_wrf/24)*24
+;    else 
+;      hr_wrf_d := hr_wrf
+;    end if
+;    start_day_d := start_day+(hr_wrf/24)
+;
+;    if (start_day_d.gt.30)
+;      start_month_d:=start_month+(start_day_d/30)
+;      start_day_d:=start_day_d-(start_day_d/30)*30
+;    else
+;      start_month_d := start_month
+;    end if
+;
+;  
+;print (hr_wrf_d)
 ;;=========Building wrf_date_name============
-    if (start_day_d.ge.1 .and. start_day_d.lt.9) then
+;    if (start_day_d.ge.1 .and. start_day_d.lt.9) then
+;
+;      if (hr_wrf_d.le.9) then
+;         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+;      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+;         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
+;      end if 
+;      end if
+;    else if (start_day_d.eq.9) then
+;
+;      if (hr_wrf_d.le.9) then
+;         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+;      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+;         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
+;      end if
+;      end if
+;
+;    else if (start_day_d.ge.10) then
 
-      if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
-      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
-      end if 
-      end if
-    else if (start_day_d.eq.9) then
-
-      if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
-      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month_d+"-0"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
-      end if
-      end if
-
-    else if (start_day_d.ge.10) then
-
-      if (hr_wrf_d.le.9) then
-         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
-      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
-         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
-
-      end if
-      end if
-
-    end if  ;;start_day
-    end if 
-    end if 
+;      if (hr_wrf_d.le.9) then
+;         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_0"+hr_wrf_d+":00:00.nc"
+;      else if (hr_wrf_d.ge.10 .and. hr_wrf_d.le.23) then
+;         wrf_date_name := "2016-0"+start_month_d+"-"+start_day_d+"_"+hr_wrf_d+":00:00.nc"
+;
+;      end if
+;      end if
+;
+;    end if  ;;start_day
+;    end if 
+;    end if 
 ;=====================================       
-print (wrf_date_name)
+;print (wrf_date_name)
  
-  wrf_file := addfile(wrf_folder+"/wrfout_d0"+wrf_domain+"_"+wrf_date_name,"r")
+;  wrf_file := addfile(wrf_folder+"/wrfout_d0"+wrf_domain+"_"+wrf_date_name,"r")
 
 ;;================================================
 ;; Setting Levels and unit conversion for var_name
@@ -309,7 +315,7 @@ print (wrf_date_name)
   end if
 ;;=============================
    wrf_var@long_name = var_name
-printVarSummary (wrf_var)
+;printVarSummary (wrf_var)
    z   := wrf_user_getvar(wrf_file, "z",0)      ; grid point height
    ww_lat := wrf_user_getvar(wrf_file, "XLAT",0)
    ww_lon := wrf_user_getvar(wrf_file, "XLONG",0)
@@ -327,19 +333,19 @@ printVarSummary (wrf_var)
     opts_cr = False
     angle = 0  ;; if 90 then read var_plane(:,wrf_ind_station(1))
     var_plane = wrf_user_intrp3d(wrf_var,z,"v",plane,angle,opts_cr)
-;printVarSummary(var_plane)
 
-    var_mat(:,(hr_wrf-start_hour)) = var_plane(:,wrf_ind_station(1))
+    var_mat(:,(hr_wrf)*3) = var_plane(:,wrf_ind_station(1))
     delete(var_plane)
 
   end do ;;hr_wrf
-;print (var_mat)
+print (var_mat)
 ;;======================
 ;;Interpolation 
 ;;======================
 
   do i_L=1,num_hrs_2-5,3
       var_mat(:,i_L) = (2*var_mat(:,i_L-1)+var_mat(:,i_L+2))/3
+print ( var_mat(:,i_L))
   end do ;;i_L
   do i_R=2,num_hrs_2-4,3
       var_mat(:,i_R) = (var_mat(:,i_R-2)+2*var_mat(:,i_R+1))/3
@@ -347,8 +353,8 @@ printVarSummary (wrf_var)
 
 
   ;;===========WKS and general plotting Resources==============
-  plot_type = "pdf"
-;  plot_type = "x11"
+;  plot_type = "pdf"
+  plot_type = "x11"
   plot_name = "$plot_folder/plt_${plotname}_stn_"+(ij_station)
 
 ;  type@wkPaperWidthF  =  6.375  ; in inches 
@@ -407,8 +413,8 @@ EOF
 
 mv ${plotname}\_${start_date}_${station_num}.tmp ${plotname}\_${start_date}\_${station_num}.ncl
 
-PATH=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0/bin:$PATH
-export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
+#PATH=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0/bin:$PATH
+#export NCARG_ROOT=/Users/psaide/ncl/precompiled_noOpenDAP_6.3.0
 ncl ${plotname}\_${start_date}\_${station_num}.ncl
 
 
@@ -421,7 +427,7 @@ gs -SDEVICE=png16m -r125 -dAutoRotatePages=/none -sOutputFile=${plot_folder}/plt
 /usr/bin/convert ${plot_folder}/plt_${plotname}_stn_${station_num}.png -rotate -90 ${plot_folder}/plt_${plotname}_stn_${station_num}.png
 
 rm ${plot_folder}/plt_${plotname}_stn_${station_num}.pdf
-rm ${plotname}\_${start_date}\_${station_num}.ncl
+#rm ${plotname}\_${start_date}\_${station_num}.ncl
 
 #for g in ${plot_folder}/*crop.pdf*
 #do
