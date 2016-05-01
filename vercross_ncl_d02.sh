@@ -75,10 +75,12 @@ begin
 ;;Open WRF- Read vars-
 ;;======================================
 
-  num_hrs = 39  ;; How many wrfout you want to plot  
+  num_hrs = 40  ;; How many wrfout you want to plot  
   var_mat = new ((/100,num_hrs/),float)  ;;100 horizontal layer, 39 hours
   FILES = systemfunc( " ls "+wrf_folder+"wrfout_d0"+wrf_domain+"_*")
   num_files = dimsizes (FILES)
+print (num_files)
+
   do hr_wrf=0,num_files-1 ;;plot num_hrs  hourly  forcasts in one plot
      wrf_file := addfile(FILES(hr_wrf),"r")
 print(FILES(hr_wrf))
