@@ -2,7 +2,7 @@
 
 # Example:
 
-#sh vercross_ncl_d01.sh 2016-04-21_18:00:00 co 1 /Shared/CGRER-Scratch/pablo_share/KORUS-AQ/forecast/output_short/20160421/ . 1
+#sh vercross_ncl_d01_81hr.sh 2016-05-02_06:00:02016-05-02_06:00:00R-Scratch/pablo_share/KORUS-AQ/forecast/output/20160502/ . 1
 
 
 
@@ -71,7 +71,7 @@ begin
 ;;======================================
 
 ;  num_hrs = 30  ;; How many wrfout you want to plot
-  num_hrs_2 = 43  ;; How many wrfout you want to plot
+  num_hrs_2 = 82  ;; How many wrfout you want to plot
 
   var_mat = new ((/100,num_hrs_2/),float)  ;;100 horizontal layer, 39 hours
 ;  day_from_start := 0
@@ -80,6 +80,8 @@ begin
 
   do hr_wrf=0,num_files-1 ;;plot num_hrs  hourly  forcasts in one plot
      wrf_file := addfile(FILES(hr_wrf),"r")
+print(num_files)
+print (hr_wrf)
 print(FILES(hr_wrf))
 
 ;  do hr_wrf=start_hour,(num_hrs_2+start_hour-1),3 ;;plot num_hrs  hourly  forcasts in one plot 
@@ -334,18 +336,19 @@ print(FILES(hr_wrf))
     angle = 0  ;; if 90 then read var_plane(:,wrf_ind_station(1))
     var_plane = wrf_user_intrp3d(wrf_var,z,"v",plane,angle,opts_cr)
 
+;print((hr_wrf)*3)
+;printVarSummary (var_mat)
     var_mat(:,(hr_wrf)*3) = var_plane(:,wrf_ind_station(1))
     delete(var_plane)
 
   end do ;;hr_wrf
-print (var_mat)
+;print (var_mat)
 ;;======================
 ;;Interpolation 
 ;;======================
 
   do i_L=1,num_hrs_2-3,3
       var_mat(:,i_L) = (2*var_mat(:,i_L-1)+var_mat(:,i_L+2))/3
-print ( var_mat(:,i_L))
   end do ;;i_L
   do i_R=2,num_hrs_2-2,3
       var_mat(:,i_R) = (var_mat(:,i_R-2)+2*var_mat(:,i_R+1))/3
@@ -390,19 +393,21 @@ print ( var_mat(:,i_L))
   res@gsnMaximize         = True          ; maximize plot size
 
 
-;  ttime = fspan (0,num_hrs_2-1,num_hrs_2)
-;  ttime@units = "hours since 2016-"+toint(str_get_field(start_date, 2, "-_.:"))+"-"+toint(str_get_field(start_date, 3, "-_.:"))+" 00:00:0.0"
+;  ttime = fspan (start_hour,start_hour+num_hrs_2-1,num_hrs_2)
+;  ttime@units = "hours since 2016-"+(str_get_field(start_date, 2, "-_.:"))+"-"+(str_get_field(start_date, 3, "-_.:"))+" 00:00:0.0"
 
   ttime = fspan (0,num_hrs_2-1,num_hrs_2)
   ttime@units = "hours since 2016-"+(str_get_field(start_date, 2, "-_.:"))+"-"+(str_get_field(start_date, 3, "-_.:"))+" "+str_get_field(start_date, 4, "-_.:")+":00:0.0"
 
+
+print ((str_get_field(start_date, 4, "-_.:")))
 
   var_mat!0 = "Height"
   var_mat!1 = "time"
   var_mat&time = ttime  
   restick = True
   restick@ttmFormat = "%N-%D_%HZ"
-  restick@ttmNumTicks = 5  ;;How many tickmark on X axis?
+  restick@ttmNumTicks = 6  ;;How many tickmark on X axis?
   time_axis_labels(var_mat&time,res,restick) ; call the formatting procedure
 
   res@tmXBLabelFontHeightF    = 0.013
