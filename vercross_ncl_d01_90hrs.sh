@@ -403,12 +403,12 @@ printVarSummary (wrf_var)
 ;  restick@ttmNumTicks = 2  ;;How many tickmark on X axis?
  
 
-  restick@ttmValues = (/(/2016,start_month,start_day,0,0,0/), \
+  restick@ttmValues = (/(/2016,start_month,start_day,start_hour,0,0/), \
                       (/2016,start_month+(start_day+1)/32,(start_day+1)-31*((start_day+1)/32),0,0,0/), \
                       (/2016,start_month+(start_day+2)/32,(start_day+2)-31*((start_day+2)/32),0,0,0/), \
                       (/2016,start_month+(start_day+3)/32,(start_day+3)-31*((start_day+3)/32),0,0,0/) /)
 
-
+  restick@ttmMinorStride = 4
   time_axis_labels(var_mat&time,res,restick) ; call the formatting procedure
 
   res@tmXBLabelFontHeightF    = 0.013
